@@ -18,6 +18,7 @@ def new_rule(interface):
     duplicate = request.form['Duplicate']
     reorder = request.form['Reorder']
     corrupt = request.form['Corrupt']
+    rate = request.form['Rate']
 
     # remove old setup
     command = 'tc qdisc del dev %s root netem' % interface
@@ -27,6 +28,8 @@ def new_rule(interface):
 
     # apply new setup
     command = 'tc qdisc add dev %s root netem' % interface
+    if rate != '':
+        command += ' rate %smbit' % rate
     if delay != '':
         command += ' delay %sms' % delay
     if loss != '':
@@ -66,6 +69,7 @@ def get_active_rules():
 
 def parse_rule(splitted_rule):
     rule = {'name':      None,
+            'rate':      None,
             'delay':     None,
             'loss':      None,
             'duplicate': None,
@@ -75,6 +79,8 @@ def parse_rule(splitted_rule):
     for argument in splitted_rule:
         if argument == 'dev':
             rule['name'] = splitted_rule[i+1]
+        elif argument == 'rate':
+            rule['rate'] = splitted_rule[i + 1].split('M')[0]
         elif argument == 'delay':
             rule['delay'] = splitted_rule[i + 1]
         elif argument == 'loss':
