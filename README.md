@@ -1,6 +1,8 @@
 # tcgui
 
-A lightweight Python-based Web-GUI for Linux traffic control (tc) to set, view and delete traffic shaping rules.
+A lightweight Python-based Web-GUI for Linux traffic control (tc) to set, view and delete traffic shaping rules. The Web-GUI is intended for short-term isolated testbeds or classroom scenarios and does not contain any security mechanisms.
+
+No further changes are planned right now, but pull requests are welcome.
 
 ## Requirements
 
