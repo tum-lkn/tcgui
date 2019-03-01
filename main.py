@@ -30,9 +30,12 @@ def main():
 @app.route('/new_rule/<interface>', methods=['POST'])
 def new_rule(interface):
     delay = request.form['Delay']
+    delay_variance = request.form['DelayVariance']
     loss = request.form['Loss']
+    loss_correlation = request.form['LossCorrelation']
     duplicate = request.form['Duplicate']
     reorder = request.form['Reorder']
+    reorder_correlation = request.form['ReorderCorrelation']
     corrupt = request.form['Corrupt']
     rate = request.form['Rate']
 
@@ -48,12 +51,18 @@ def new_rule(interface):
         command += ' rate %smbit' % rate
     if delay != '':
         command += ' delay %sms' % delay
+        if delay_variance != '':
+            command += ' %sms' % delay_variance
     if loss != '':
         command += ' loss %s%%' % loss
+        if loss_correlation != '':
+            command += ' %s%%' % loss_correlation
     if duplicate != '':
         command += ' duplicate %s%%' % duplicate
     if reorder != '':
         command += ' reorder %s%%' % reorder
+        if reorder_correlation != '':
+            command += ' %s%%' % reorder_correlation
     if corrupt != '':
         command += ' corrupt %s%%' % corrupt
     print(command)
@@ -72,6 +81,7 @@ def remove_rule(interface):
     proc.wait()
     return redirect(url_for('main'))
 
+
 def get_active_rules():
     proc = subprocess.Popen(['tc', 'qdisc'], stdout=subprocess.PIPE)
     output = proc.communicate()[0].decode()
@@ -79,7 +89,7 @@ def get_active_rules():
     rules = []
     dev = set()
     for line in lines:
-        arguments = line.split(' ')
+        arguments = line.split()
         rule = parse_rule(arguments)
         if rule['name'] and rule['name'] not in dev:
             rules.append(rule)
@@ -87,40 +97,49 @@ def get_active_rules():
     return rules
 
 
-def parse_rule(splitted_rule):
-    rule = {'name':      None,
-            'rate':      None,
-            'delay':     None,
-            'loss':      None,
-            'duplicate': None,
-            'reorder':   None,
-            'corrupt':   None}
+def parse_rule(split_rule):
+    rule = {'name':               None,
+            'rate':               None,
+            'delay':              None,
+            'delayVariance':      None,
+            'loss':               None,
+            'lossCorrelation':    None,
+            'duplicate':          None,
+            'reorder':            None,
+            'reorderCorrelation': None,
+            'corrupt':            None}
     i = 0
-    for argument in splitted_rule:
+    for argument in split_rule:
         if argument == 'dev':
             # Both regex pattern and dev name can be given
             # An interface could match the pattern and/or 
             # be in the interface list
             if pattern is None and dev_list is None:
-                rule['name'] = splitted_rule[i+1]
+                rule['name'] = split_rule[i + 1]
             if pattern:
-                if pattern.match(splitted_rule[i+1]) :
-                    rule['name'] = splitted_rule[i+1]
+                if pattern.match(split_rule[i + 1]) :
+                    rule['name'] = split_rule[i + 1]
             if dev_list:
-                if splitted_rule[i+1] in dev_list:
-                    rule['name'] = splitted_rule[i+1]
+                if split_rule[i + 1] in dev_list:
+                    rule['name'] = split_rule[i + 1]
         elif argument == 'rate':
-            rule['rate'] = splitted_rule[i + 1].split('Mbit')[0]
+            rule['rate'] = split_rule[i + 1].split('Mbit')[0]
         elif argument == 'delay':
-            rule['delay'] = splitted_rule[i + 1]
+            rule['delay'] = split_rule[i + 1]
+            if 'ms' in split_rule[i + 2]:
+                rule['delayVariance'] = split_rule[i + 2]
         elif argument == 'loss':
-            rule['loss'] = splitted_rule[i + 1]
+            rule['loss'] = split_rule[i + 1]
+            if '%' in split_rule[i + 2]:
+                rule['lossCorrelation'] = split_rule[i + 2]
         elif argument == 'duplicate':
-            rule['duplicate'] = splitted_rule[i + 1]
+            rule['duplicate'] = split_rule[i + 1]
         elif argument == 'reorder':
-            rule['reorder'] = splitted_rule[i + 1]
+            rule['reorder'] = split_rule[i + 1]
+            if '%' in split_rule[i + 2]:
+                rule['reorderCorrelation'] = split_rule[i + 2]
         elif argument == 'corrupt':
-            rule['corrupt'] = splitted_rule[i + 1]
+            rule['corrupt'] = split_rule[i + 1]
         i += 1
     return rule
 
@@ -133,7 +152,7 @@ if __name__ == "__main__":
         pattern = re.compile(args.regex)
     if args.dev:
         dev_list = args.dev
-    app_args={}
+    app_args = {}
     if args.ip:
         app_args['host'] = args.ip
     if args.port:
