@@ -16,36 +16,44 @@
                         <th>Name</th>
                         <th>Current Value</th>
                         <th>New Value</th>
+                        <th>Variance / Correlation</th>
+                        <th>New Value</th>
                     </tr>
                     <tr>
                         <td>Rate:</td>
                         <td>{{ rule['rate'] }}</td>
-                        <td><input type="text" name="Rate" size="5"> in Mbit</td>
+                        <td><input type="text" name="Rate" size="5"> Mbit</td>
                     </tr>
                     <tr>
                         <td>Delay:</td>
                         <td>{{ rule['delay'] }}</td>
-                        <td><input type="text" name="Delay" size="5"> in ms</td>
+                        <td><input type="text" name="Delay" size="5"> ms</td>
+                        <td>{{ rule['delayVariance'] }}</td>
+                        <td>±<input type="text" name="DelayVariance" size="5"> ms</td>
                     </tr>
                     <tr>
                         <td>Loss:</td>
                         <td>{{ rule['loss'] }}</td>
-                        <td><input type="text" name="Loss" size="5"> in %</td>
+                        <td><input type="text" name="Loss" size="5"> %</td>
+                        <td>{{ rule['lossCorrelation'] }}</td>
+                        <td><input type="text" name="LossCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Duplicate:</td>
                         <td>{{ rule['duplicate'] }}</td>
-                        <td><input type="text" name="Duplicate" size="5"> in %</td>
+                        <td><input type="text" name="Duplicate" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Reorder:</td>
                         <td>{{ rule['reorder'] }}</td>
-                        <td><input type="text" name="Reorder" size="5"> in %</td>
+                        <td><input type="text" name="Reorder" size="5"> %</td>
+                        <td>{{ rule['reorderCorrelation'] }}</td>
+                        <td><input type="text" name="ReorderCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Corrupt</td>
                         <td>{{ rule['corrupt'] }}</td>
-                        <td><input type="text" name="Corrupt" size="5"> in %</td>
+                        <td><input type="text" name="Corrupt" size="5"> %</td>
                     </tr>
                 </table>
                 <input type="submit" value="Apply Rules">
