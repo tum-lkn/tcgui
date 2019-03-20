@@ -28,3 +28,28 @@ No further changes are planned right now, but pull requests are welcome.
     ```
 
 - The tool will read your interfaces and the current setup every time the site is reloaded
+
+## Test & Develop
+
+You can use the supplied Vagrantfile to test tcgui quickly. Vagrant will setup two machines, sender (192.168.210.2) and a receiver (192.168.210.3):
+
+	vagrant up
+
+Afterwards connect to the sender and start the GUI:
+
+	vagrant ssh sender
+	cd /vagrant
+	sudo python3 main.py --ip 0.0.0.0 --debug
+
+Start a receiver in the receiving VM:
+
+	vagrant ssh receiver
+	iperf3 -s
+	
+Send a packet stream from the sender to the receiver:
+
+	vagrant ssh sender
+	iperf3 -c 192.168.210.3 -t 300
+
+Now access the GUI at http://192.168.210.2:5000/ and change the rate of interface eth1. You should see the sending/receiving rate to decrease to the set amount.
+

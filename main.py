@@ -145,8 +145,9 @@ def parse_rule(split_rule):
 
 
 if __name__ == "__main__":
-    #if os.geteuid() != 0:
-    #    exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
+    if os.geteuid() != 0:
+        print("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
+        exit(1)
     args = parse_arguments()
     if args.regex:
         pattern = re.compile(args.regex)
