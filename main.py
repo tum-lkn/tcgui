@@ -10,7 +10,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='TC web GUI')
     parser.add_argument('--ip', type=str, required=False,
                         help='The IP where the server is listening')
-    parser.add_argument('--port', type=str, required=False,
+    parser.add_argument('--port', type=int, required=False,
                         help='The port where the server is listening')
     parser.add_argument('--dev', type=str, nargs='*', required=False,
                         help='The interfaces to restrict to')
