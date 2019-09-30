@@ -48,7 +48,7 @@ def new_rule(interface):
     # apply new setup
     command = 'tc qdisc add dev %s root netem' % interface
     if rate != '':
-        command += ' rate %smbit' % rate
+        command += ' rate %skbit' % rate
     if delay != '':
         command += ' delay %sms' % delay
         if delay_variance != '':
@@ -123,7 +123,7 @@ def parse_rule(split_rule):
                 if split_rule[i + 1] in dev_list:
                     rule['name'] = split_rule[i + 1]
         elif argument == 'rate':
-            rule['rate'] = split_rule[i + 1].split('Mbit')[0]
+            rule['rate'] = split_rule[i + 1].split('kbit')[0]
         elif argument == 'delay':
             rule['delay'] = split_rule[i + 1]
             if len(split_rule) > (i + 2) and 'ms' in split_rule[i + 2]:
