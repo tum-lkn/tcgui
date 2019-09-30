@@ -22,7 +22,14 @@
                     <tr>
                         <td>Rate:</td>
 			<td>{{ rule['rate'] }}</td>
-                        <td><input type="number" name="Rate" size="5"> Mbit</td>
+                        <td>
+                            <input type="number" name="Rate" size="5">
+                            <select name="rate_unit">
+                                {% for unit in units %}
+                                <option value="{{ unit }}"{% if unit == standard_unit %} selected{% endif %}>{{ unit }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Delay:</td>

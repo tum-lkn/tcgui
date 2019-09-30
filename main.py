@@ -2,6 +2,22 @@ import subprocess, os, re, argparse
 from flask import Flask, render_template, redirect, request, url_for
 
 
+BANDWITH_UNITS = [
+    "bit",   # Bits per second
+    "kbit",  # Kilobits per second
+    "mbit",  # Megabits per second
+    "gbit",  # Gigabits per second
+    "tbit",  # Terabits per second
+    "bps",   # Bytes per second
+    "kbps",  # Kilobytes per second
+    "mbps",  # Megabytes per second
+    "gbps",  # Gigabytes per second
+    "tbps"   # Terabytes per second
+]
+
+STANDARD_UNIT = "mbit"
+
+
 app = Flask(__name__)
 pattern = None
 dev_list = None
@@ -24,7 +40,8 @@ def parse_arguments():
 @app.route("/")
 def main():
     rules = get_active_rules()
-    return render_template('main.html', rules=rules)
+    return render_template('main.html', rules=rules, units=BANDWITH_UNITS,
+                           standard_unit=STANDARD_UNIT)
 
 
 @app.route('/new_rule/<interface>', methods=['POST'])
@@ -38,6 +55,7 @@ def new_rule(interface):
     reorder_correlation = request.form['ReorderCorrelation']
     corrupt = request.form['Corrupt']
     rate = request.form['Rate']
+    rate_unit = request.form['rate_unit']
 
     # remove old setup
     command = 'tc qdisc del dev %s root netem' % interface
@@ -48,7 +66,7 @@ def new_rule(interface):
     # apply new setup
     command = 'tc qdisc add dev %s root netem' % interface
     if rate != '':
-        command += ' rate %smbit' % rate
+        command += ' rate %s%s' % (rate, rate_unit)
     if delay != '':
         command += ' delay %sms' % delay
         if delay_variance != '':
