@@ -4,6 +4,8 @@ A lightweight Python-based Web-GUI for Linux traffic control (`tc`) to set, view
 
 No further changes are planned right now, but pull requests are welcome.
 
+![tcgui screenshot](tcgui.png)
+
 ## Requirements
 
 - Tested with Ubuntu 16.04 LTS & Raspbian 4.14.98-v7+ (stretch, Debian 9.8)
