@@ -6,7 +6,7 @@ import argparse
 from flask import Flask, render_template, redirect, request, url_for
 
 
-BANDWITH_UNITS = [
+BANDWIDTH_UNITS = [
     "bit",   # Bits per second
     "kbit",  # Kilobits per second
     "mbit",  # Megabits per second
@@ -45,7 +45,7 @@ def parse_arguments():
 @app.route("/")
 def main():
     rules = get_active_rules()
-    return render_template('main.html', rules=rules, units=BANDWITH_UNITS,
+    return render_template('main.html', rules=rules, units=BANDWIDTH_UNITS,
                            standard_unit=STANDARD_UNIT)
 
 
