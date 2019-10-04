@@ -1,4 +1,8 @@
-import subprocess, os, re, argparse
+import subprocess
+import os
+import re
+import argparse
+
 from flask import Flask, render_template, redirect, request, url_for
 
 
@@ -22,6 +26,7 @@ app = Flask(__name__)
 pattern = None
 dev_list = None
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='TC web GUI')
     parser.add_argument('--ip', type=str, required=False,
@@ -30,9 +35,9 @@ def parse_arguments():
                         help='The port where the server is listening')
     parser.add_argument('--dev', type=str, nargs='*', required=False,
                         help='The interfaces to restrict to')
-    parser.add_argument('--regex',type=str, required=False,
+    parser.add_argument('--regex', type=str, required=False,
                         help='A regex to match interfaces')
-    parser.add_argument('--debug',action='store_true',
+    parser.add_argument('--debug', action='store_true',
                         help='Run Flask in debug mode')
     return parser.parse_args()
 
@@ -130,12 +135,12 @@ def parse_rule(split_rule):
     for argument in split_rule:
         if argument == 'dev':
             # Both regex pattern and dev name can be given
-            # An interface could match the pattern and/or 
+            # An interface could match the pattern and/or
             # be in the interface list
             if pattern is None and dev_list is None:
                 rule['name'] = split_rule[i + 1]
             if pattern:
-                if pattern.match(split_rule[i + 1]) :
+                if pattern.match(split_rule[i + 1]):
                     rule['name'] = split_rule[i + 1]
             if dev_list:
                 if split_rule[i + 1] in dev_list:
@@ -164,7 +169,8 @@ def parse_rule(split_rule):
 
 if __name__ == "__main__":
     if os.geteuid() != 0:
-        print("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
+        print("You need to have root privileges to run this script.\n"
+              "Please try again, this time using 'sudo'. Exiting.")
         exit(1)
     args = parse_arguments()
     if args.regex:
