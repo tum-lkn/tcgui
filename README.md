@@ -8,9 +8,10 @@ No further changes are planned right now, but pull requests are welcome.
 
 ## Requirements
 
-- Tested with Ubuntu 16.04 LTS & Raspbian 4.14.98-v7+ (stretch, Debian 9.8)
+- Tested with Ubuntu 16.04 LTS & Ubuntu 18.04 LTS & Raspbian 4.14.98-v7+ (stretch, Debian 9.8)
 - `netem` tools & `python3-flask` are required
-    - Install with `sudo apt-get install iproute python3-flask`
+    - Ubuntu 16.04 : Install with `sudo apt-get install iproute python3-flask`
+    - Ubuntu 18.04 : Install with `sudo apt-get install iproute2 python3-flask`
 - More information:
     - https://calomel.org/network_loss_emulation.html
     - https://wiki.linuxfoundation.org/networking/netem
