@@ -32,6 +32,14 @@ No further changes are planned right now, but pull requests are welcome.
 
 - The tool will read your interfaces and the current setup every time the site is reloaded
 
+## Docker
+
+You can use docker to run this application. Run with host network (`--network host`) and network admin capabilities (`--cap-add=NET_ADMIN`). Site will be available on default port Ex: `http://dockerhost:5000`
+
+    docker run -it --rm --network host --cap-add=NET_ADMIN ncareau/tcgui:latest
+
+### todo add port, ip dev and regex 
+
 ## Test & Develop
 
 You can use the supplied Vagrantfile to test tcgui quickly. Vagrant will setup two machines, sender (192.168.210.2) and a receiver (192.168.210.3):
