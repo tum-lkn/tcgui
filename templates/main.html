@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>tcgui</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 </head>
 <body>
 <h4>Available Interfaces</h4>
@@ -11,17 +12,20 @@
         <li>
             {{ rule['name'] }}
             <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
-                <table border="1">
-                    <tr>
-                        <th>Name</th>
-                        <th>Current Value</th>
-                        <th>New Value</th>
-                        <th>Variance / Correlation</th>
-                        <th>New Value</th>
-                    </tr>
+                <table class="pure-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Current Value</th>
+                            <th>New Value</th>
+                            <th>Variance / Correlation</th>
+                            <th>New Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>Rate:</td>
-			<td>{{ rule['rate'] }}</td>
+			            <td>{{ rule['rate'] }}</td>
                         <td>
                             <input type="number" name="Rate" size="5">
                             <select name="rate_unit">
@@ -62,6 +66,7 @@
                         <td>{{ rule['corrupt'] }}</td>
                         <td><input type="number" name="Corrupt" size="5"> %</td>
                     </tr>
+                </tbody>
                 </table>
                 <input type="submit" value="Apply Rules">
             </form>
