@@ -172,12 +172,24 @@ if __name__ == "__main__":
         print("You need to have root privileges to run this script.\n"
               "Please try again, this time using 'sudo'. Exiting.")
         exit(1)
+
+    # TC Variables
     args = parse_arguments()
+
+    pattern = os.environ.get("TCGUI_REGEX")
     if args.regex:
         pattern = re.compile(args.regex)
+    
+    dev_list = os.environ.get("TCGUI_DEV")
     if args.dev:
         dev_list = args.dev
+
+    # Flask Variable
     app_args = {}
+
+    app_args['host'] = os.environ.get("TCGUI_IP")
+    app_args['port'] = os.environ.get("TCGUI_PORT")
+
     if args.ip:
         app_args['host'] = args.ip
     if args.port:

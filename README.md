@@ -36,9 +36,15 @@ No further changes are planned right now, but pull requests are welcome.
 
 You can use docker to run this application. Run with host network (`--network host`) and network admin capabilities (`--cap-add=NET_ADMIN`). Site will be available on default port Ex: `http://dockerhost:5000`
 
-    docker run -it --rm --network host --cap-add=NET_ADMIN ncareau/tcgui:latest
+    docker run -dit --restart unless-stopped --network host --cap-add=NET_ADMIN ncareau/tcgui:latest
 
-### todo add port, ip dev and regex 
+
+You can change the configuration using these Environment Variables:
+
+* **TCGUI_IP** - *Default `0.0.0.0`* - Use to change listening address
+* **TCGUI_PORT** - *Default `5000`* - Use to change the listening port
+* **TCGUI_DEV** - The interfaces to restrict to
+* **TCGUI_REGEX** - A regex to match interfaces
 
 ## Test & Develop
 
