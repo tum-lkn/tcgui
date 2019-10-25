@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>tcgui</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}">
 </head>
 <body>
-<h4>Available Interfaces</h4>
-<ul>
+
+<div style="padding:2em;">
+    <h1>TCGUI - Available Interfaces</h1>
     {% for rule in rules %}
-        <li>
-            {{ rule['name'] }}
+        <div>
+            <h2>{{ rule['name'] }}</h2>
             <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
                 <table class="pure-table">
                     <thead>
@@ -25,8 +27,8 @@
                     <tbody>
                     <tr>
                         <td>Rate:</td>
-			            <td>{{ rule['rate'] }}</td>
-                        <td>
+			            <td align="right">{{ rule['rate'] }}</td>
+                        <td align="left">
                             <input type="number" name="Rate" size="5">
                             <select name="rate_unit">
                                 {% for unit in units %}
@@ -38,47 +40,56 @@
                     <tr>
                         <td>Delay:</td>
                         <td>{{ rule['delay'] }}</td>
-                        <td><input type="number" name="Delay" size="5"> ms</td>
+                        <td align="left"><input type="number" name="Delay" size="5"> ms</td>
                         <td>±{{ rule['delayVariance'] }}</td>
-                        <td>±<input type="number" name="DelayVariance" size="5"> ms</td>
+                        <td align="left">±<input type="number" name="DelayVariance" size="5"> ms</td>
                     </tr>
                     <tr>
                         <td>Loss:</td>
                         <td>{{ rule['loss'] }}</td>
-                        <td><input type="number" name="Loss" size="5"> %</td>
+                        <td align="left"><input type="number" name="Loss" size="5"> %</td>
                         <td>{{ rule['lossCorrelation'] }}</td>
-                        <td><input type="number" name="LossCorrelation" size="5"> %</td>
+                        <td align="left"> <input type="number" name="LossCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Duplicate:</td>
                         <td>{{ rule['duplicate'] }}</td>
-                        <td><input type="number" name="Duplicate" size="5"> %</td>
+                        <td align="left"><input type="number" name="Duplicate" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Reorder:</td>
                         <td>{{ rule['reorder'] }}</td>
-                        <td><input type="number" name="Reorder" size="5"> %</td>
+                        <td align="left"><input type="number" name="Reorder" size="5"> %</td>
                         <td>{{ rule['reorderCorrelation'] }}</td>
-                        <td><input type="number" name="ReorderCorrelation" size="5"> %</td>
+                        <td align="left"> <input type="number" name="ReorderCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Corrupt</td>
                         <td>{{ rule['corrupt'] }}</td>
-                        <td><input type="number" name="Corrupt" size="5"> %</td>
+                        <td align="left"><input type="number" name="Corrupt" size="5"> %</td>
                     </tr>
                 </tbody>
                 </table>
-                <input type="submit" value="Apply Rules">
+                <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
             </form>
             <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
-                <input type="submit" value="Remove Rules">
+                <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
             </form>
-        </li>
+        </div>
     {% endfor %}
-</ul>
+</div>
 <style>
-    th,td {
-        text-align: center;
+    /* th,td { */
+        /* text-align: center; */
+    /* } */
+
+    .button-remove {
+        color: white;
+        background: rgb(202, 60, 60);
+    }
+
+    .pure-button {
+        margin-top: .5em;
     }
 </style>
 </body>
