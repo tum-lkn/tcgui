@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 RUN apk add iproute2
 
-RUN pip3 install flask
+RUN pip3 install Flask
 
 ENV TCGUI_IP=0.0.0.0
 
