@@ -46,6 +46,13 @@ You can change the configuration using these Environment Variables:
 * **TCGUI_DEV** - The interfaces to restrict to
 * **TCGUI_REGEX** - A regex to match interfaces
 
+If using an interface bridge, docker might cause issue with the bridge. (https://askubuntu.com/questions/1073501/docker-breaks-network-bridging-to-virtual-machines)
+To fix this, create a file `/etc/docker/daemon.json` with the following contents:
+
+	{
+	    "iptables" : false
+	}
+
 ## Test & Develop
 
 You can use the supplied Vagrantfile to test tcgui quickly. Vagrant will setup two machines, sender (192.168.210.2) and a receiver (192.168.210.3):
