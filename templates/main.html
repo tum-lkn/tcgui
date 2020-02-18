@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>tcgui</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}">
 </head>
 <body>
-<h4>Available Interfaces</h4>
-<ul>
+
+<div style="padding:2em;">
+    <h1>TCGUI - {{ rules|length }} Available Interfaces</h1>
+    <ul>
+        {% for rule in rules %}
+            <li><a href="#{{ rule['name'] }}">{{ rule['name'] }}</a></li>
+        {% endfor %}
+    </ul>
     {% for rule in rules %}
-        <li>
-            {{ rule['name'] }}
+        <div>
+            <h2 id="{{ rule['name'] }}">{{ rule['name'] }}</h2>
             <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
-                <table border="1">
+                <table class="pure-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Current Value</th>
+                            <th>New Value</th>
+                            <th>Variance / Correlation</th>
+                            <th>New Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
-                        <th>Name</th>
-                        <th>Current Value</th>
-                        <th>New Value</th>
-                        <th>Variance / Correlation</th>
-                        <th>New Value</th>
-                    </tr>
-                    <tr>
-                        <td>Rate:</td>
-			<td>{{ rule['rate'] }}</td>
-                        <td>
+                        <td>Rate</td>
+			            <td class="tcgui-value-cell">{{ rule['rate'] }}</td>
+                        <td class="tcgui-input-cell">
                             <input type="number" name="Rate" size="5">
                             <select name="rate_unit">
                                 {% for unit in units %}
@@ -32,53 +43,79 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Delay:</td>
-                        <td>{{ rule['delay'] }}</td>
-                        <td><input type="number" name="Delay" size="5"> ms</td>
-                        <td>±{{ rule['delayVariance'] }}</td>
-                        <td>±<input type="number" name="DelayVariance" size="5"> ms</td>
+                        <td>Delay</td>
+                        <td class="tcgui-value-cell">{{ rule['delay'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Delay" size="5"> ms</td>
+                        <td class="tcgui-value-cell">±{{ rule['delayVariance'] }}</td>
+                        <td class="tcgui-input-cell">±<input type="number" name="DelayVariance" size="5"> ms</td>
                     </tr>
                     <tr>
-                        <td>Loss:</td>
-                        <td>{{ rule['loss'] }}</td>
-                        <td><input type="number" name="Loss" size="5"> %</td>
-                        <td>{{ rule['lossCorrelation'] }}</td>
-                        <td><input type="number" name="LossCorrelation" size="5"> %</td>
+                        <td>Loss</td>
+                        <td class="tcgui-value-cell">{{ rule['loss'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Loss" size="5"> %</td>
+                        <td class="tcgui-value-cell">{{ rule['lossCorrelation'] }}</td>
+                        <td class="tcgui-input-cell"> <input type="number" name="LossCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
-                        <td>Duplicate:</td>
-                        <td>{{ rule['duplicate'] }}</td>
-                        <td><input type="number" name="Duplicate" size="5"> %</td>
+                        <td>Duplicate</td>
+                        <td class="tcgui-value-cell">{{ rule['duplicate'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Duplicate" size="5"> %</td>
                     </tr>
                     <tr>
-                        <td>Reorder:</td>
-                        <td>{{ rule['reorder'] }}</td>
-                        <td><input type="number" name="Reorder" size="5"> %</td>
-                        <td>{{ rule['reorderCorrelation'] }}</td>
-                        <td><input type="number" name="ReorderCorrelation" size="5"> %</td>
+                        <td>Reorder</td>
+                        <td class="tcgui-value-cell">{{ rule['reorder'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Reorder" size="5"> %</td>
+                        <td class="tcgui-value-cell">{{ rule['reorderCorrelation'] }}</td>
+                        <td class="tcgui-input-cell"> <input type="number" name="ReorderCorrelation" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Corrupt</td>
-                        <td>{{ rule['corrupt'] }}</td>
-                        <td><input type="number" name="Corrupt" size="5"> %</td>
+                        <td class="tcgui-value-cell">{{ rule['corrupt'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Corrupt" size="5"> %</td>
                     </tr>
                     <tr>
                         <td>Limit</td>
-                        <td>{{ rule['limit'] }}</td>
-                        <td><input type="number" name="Limit" size="5"></td>
+                        <td class="tcgui-value-cell">{{ rule['limit'] }}</td>
+                        <td class="tcgui-input-cell"><input type="number" name="Limit" size="5"></td>
                     </tr>
+                </tbody>
                 </table>
-                <input type="submit" value="Apply Rules">
+                <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
             </form>
             <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
-                <input type="submit" value="Remove Rules">
+                <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
             </form>
-        </li>
+        </div>
     {% endfor %}
-</ul>
+</div>
+<script type="text/javascript">
+
+    var x = document.getElementsByClassName("tcgui-value-cell");
+    var i;
+    for (i = 0; i < x.length; i++) {
+        if(x[i].innerHTML.indexOf("None") === -1 ){
+            x[i].style.backgroundColor = "rgb(121, 168, 255)";
+        }
+        
+    } 
+</script>
 <style>
-    th,td {
-        text-align: center;
+    th,td { 
+        text-align: center; 
+
+    }
+
+    .tcgui-input-cell {
+        text-align: left;
+    }
+
+    .button-remove {
+        color: white;
+        background: rgb(202, 60, 60);
+    }
+
+    .pure-button {
+        margin-top: .5em;
     }
 </style>
 </body>
