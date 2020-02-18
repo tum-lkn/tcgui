@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "sender" do |cfg|
     config.vm.provision "shell", inline: <<-SHELL
-            apt-get update
+            apt update
             apt install -y iproute python3 python3-flask iperf3
     SHELL
     cfg.vm.network "private_network", ip: "192.168.210.2"
@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "receiver" do |cfg|
     config.vm.provision "shell", inline: <<-SHELL
-            apt-get update
+            apt update
             apt install -y iperf3
     SHELL
     cfg.vm.network "private_network", ip: "192.168.210.3"

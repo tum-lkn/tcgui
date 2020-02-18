@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  server:
+    build: .
+    environment:
+      TCGUI_IP: 0.0.0.0
+      TCGUI_PORT: 5000
+    ports:
+      - '5000:5000'
+    cap_add:
+      - NET_ADMIN
