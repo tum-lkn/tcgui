@@ -59,6 +59,7 @@ def new_rule(interface):
     reorder = request.form['Reorder']
     reorder_correlation = request.form['ReorderCorrelation']
     corrupt = request.form['Corrupt']
+    limit = request.form['Limit']
     rate = request.form['Rate']
     rate_unit = request.form['rate_unit']
 
@@ -88,6 +89,8 @@ def new_rule(interface):
             command += ' %s%%' % reorder_correlation
     if corrupt != '':
         command += ' corrupt %s%%' % corrupt
+    if limit != '':
+        command += ' limit %s' % limit
     print(command)
     command = command.split(' ')
     proc = subprocess.Popen(command)
@@ -130,7 +133,8 @@ def parse_rule(split_rule):
             'duplicate':          None,
             'reorder':            None,
             'reorderCorrelation': None,
-            'corrupt':            None}
+            'corrupt':            None,
+            'limit':              None}
     i = 0
     for argument in split_rule:
         if argument == 'dev':
@@ -163,6 +167,8 @@ def parse_rule(split_rule):
                 rule['reorderCorrelation'] = split_rule[i + 2]
         elif argument == 'corrupt':
             rule['corrupt'] = split_rule[i + 1]
+        elif argument == 'limit':
+            rule['limit'] = split_rule[i + 1]
         i += 1
     return rule
 
