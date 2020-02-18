@@ -28,6 +28,7 @@ dev_list = None
 
 app.static_folder = "static"
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="TC web GUI")
     parser.add_argument(
