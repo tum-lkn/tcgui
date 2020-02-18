@@ -32,6 +32,27 @@ No further changes are planned right now, but pull requests are welcome.
 
 - The tool will read your interfaces and the current setup every time the site is reloaded
 
+## Docker
+
+You can use docker to run this application. Run with host network (`--network host`) and network admin capabilities (`--cap-add=NET_ADMIN`). Site will be available on default port Ex: `http://dockerhost:5000`
+
+    docker run -dit --restart unless-stopped --network host --cap-add=NET_ADMIN ncareau/tcgui:latest
+
+
+You can change the configuration using these Environment Variables:
+
+* **TCGUI_IP** - *Default `0.0.0.0`* - Use to change listening address
+* **TCGUI_PORT** - *Default `5000`* - Use to change the listening port
+* **TCGUI_DEV** - The interfaces to restrict to
+* **TCGUI_REGEX** - A regex to match interfaces
+
+If using an interface bridge, docker might cause issue with the bridge. (https://askubuntu.com/questions/1073501/docker-breaks-network-bridging-to-virtual-machines)
+To fix this, create a file `/etc/docker/daemon.json` with the following contents:
+
+	{
+	    "iptables" : false
+	}
+
 ## Test & Develop
 
 You can use the supplied Vagrantfile to test tcgui quickly. Vagrant will setup two machines, sender (192.168.210.2) and a receiver (192.168.210.3):
