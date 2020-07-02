@@ -1,7 +1,6 @@
 # tcgui
 
-[![Actions Status](https://github.com/tum-lkn/tcgui/workflows/Check/badge.svg)](https://github.com/tum-lkn/tcgui)
-[![Actions Status](https://github.com/tum-lkn/tcgui/workflows/Docker/badge.svg)](https://github.com/tum-lkn/tcgui)
+[![Actions Status](https://github.com/tum-lkn/tcgui/workflows/CI/badge.svg)](https://github.com/tum-lkn/tcgui)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A lightweight Python-based Web-GUI for Linux traffic control (`tc`) to set, view and delete traffic shaping rules. The Web-GUI is intended for short-term isolated testbeds or classroom scenarios and does not contain any security mechanisms.
@@ -16,6 +15,7 @@ No further changes are planned right now, but pull requests are welcome.
 - `netem` tools & `python3-flask` are required
     - Ubuntu 16.04 : Install with `sudo apt install iproute python3-flask`
     - Ubuntu 18.04 : Install with `sudo apt install iproute2 python3-flask`
+    - Ubuntu 20.04 : Install with `sudo apt install iproute2 python3-flask`
 - More information:
     - https://calomel.org/network_loss_emulation.html
     - https://wiki.linuxfoundation.org/networking/netem

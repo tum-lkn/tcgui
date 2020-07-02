@@ -1,12 +1,10 @@
-name: Check
+name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
-
+  check:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -20,3 +18,17 @@ jobs:
     - name: Check code format
       run: |
         make check_format
+
+  super-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint Code Base
+      uses: docker://github/super-linter:v2.1.0
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Build
+      run: docker build . --tag tcgui:$(date +%s)
