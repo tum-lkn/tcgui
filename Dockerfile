@@ -1,6 +1,7 @@
 FROM python:3.8-alpine
 
-RUN apk add iproute2
+RUN apk add --no-cache iproute2 && \
+    rm -rf /var/cache/apk/*
 
 RUN pip3 install Flask
 
