@@ -30,25 +30,34 @@ app.static_folder = "static"
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="TC web GUI")
+    parser = argparse.ArgumentParser(
+        description="TC web GUI",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument(
-        "--ip", type=str, required=False, help="The IP where the server is listening"
+        "--ip",
+        type=str,
+        default=os.environ.get("TCGUI_IP"),
+        help="The IP where the server is listening",
     )
     parser.add_argument(
         "--port",
         type=int,
-        required=False,
+        default=os.environ.get("TCGUI_PORT"),
         help="The port where the server is listening",
     )
     parser.add_argument(
         "--dev",
         type=str,
         nargs="*",
-        required=False,
+        default=os.environ.get("TCGUI_DEV"),
         help="The interfaces to restrict to",
     )
     parser.add_argument(
-        "--regex", type=str, required=False, help="A regex to match interfaces"
+        "--regex",
+        type=str,
+        default=os.environ.get("TCGUI_REGEX"),
+        help="A regex to match interfaces",
     )
     parser.add_argument("--debug", action="store_true", help="Run Flask in debug mode")
     return parser.parse_args()
@@ -199,24 +208,11 @@ if __name__ == "__main__":
     # TC Variables
     args = parse_arguments()
 
-    pattern = os.environ.get("TCGUI_REGEX")
-    if args.regex:
-        pattern = re.compile(args.regex)
-
-    dev_list = os.environ.get("TCGUI_DEV")
-    if args.dev:
-        dev_list = args.dev
+    pattern = re.compile(args.regex)
+    dev_list = args.dev
 
     # Flask Variable
-    app_args = {}
-
-    app_args["host"] = os.environ.get("TCGUI_IP")
-    app_args["port"] = os.environ.get("TCGUI_PORT")
-
-    if args.ip:
-        app_args["host"] = args.ip
-    if args.port:
-        app_args["port"] = args.port
+    app_args = {"host": args.ip, "port": args.port}
     if not args.debug:
         app_args["debug"] = False
     app.debug = True
