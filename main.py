@@ -208,7 +208,7 @@ if __name__ == "__main__":
     # TC Variables
     args = parse_arguments()
 
-    pattern = re.compile(args.regex)
+    pattern = re.compile(args.regex) if args.regex else args.regex
     dev_list = args.dev
 
     # Flask Variable
