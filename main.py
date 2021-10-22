@@ -86,13 +86,13 @@ def new_rule(interface):
     rate_unit = request.form["rate_unit"]
 
     # remove old setup
-    command = "tc qdisc del dev %s root netem" % interface
+    command = "/usr/sbin/tc qdisc del dev %s root netem" % interface
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
 
     # apply new setup
-    command = "tc qdisc add dev %s root netem" % interface
+    command = "/usr/sbin/tc qdisc add dev %s root netem" % interface
     if rate != "":
         command += " rate %s%s" % (rate, rate_unit)
     if delay != "":
@@ -123,7 +123,7 @@ def new_rule(interface):
 @app.route("/remove_rule/<interface>", methods=["POST"])
 def remove_rule(interface):
     # remove old setup
-    command = "tc qdisc del dev %s root netem" % interface
+    command = "/usr/sbin/tc qdisc del dev %s root netem" % interface
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
@@ -131,7 +131,7 @@ def remove_rule(interface):
 
 
 def get_active_rules():
-    proc = subprocess.Popen(["tc", "qdisc"], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(["/usr/sbin/tc", "qdisc"], stdout=subprocess.PIPE)
     output = proc.communicate()[0].decode()
     lines = output.split("\n")[:-1]
     rules = []
