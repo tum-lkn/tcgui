@@ -90,30 +90,53 @@
 </div>
 <script type="text/javascript">
     (function() {
+        /** Get next sibling of specified node or element.
+         *
+         * @param {Node|HTMLElement} element Element to search for the next sibling.
+         * @returns {HTMLElement|null} Next sibling, null it not exists.
+         */
+        function nextSiblingElement(element) {
+            do {
+                element = element.nextSibling;
+            } while (element && element.nodeType !== Node.ELEMENT_NODE)
+
+            return element;
+        }
+
+        /** Get first child of specified node or element.
+         *
+         * @param {Node|HTMLElement} element Element to search for the first child of.
+         * @returns {HTMLElement|null} First child element, null if not exists.
+         */
+        function firstChildElement(element) {
+            element = element.firstChild;
+
+            if (element && element.nodeType !== Node.ELEMENT_NODE)
+                element = nextSiblingElement(element)
+
+            return element;
+        }
+
         var x = document.getElementsByClassName("tcgui-value-cell");
-        var i, input, match;
+        var i, inputCell, input, select, match;
         for (i = 0; i < x.length; i++) {
             if (x[i].innerHTML.indexOf("None") === -1) {
-                x[i].style.backgroundColor = "rgb(121, 168, 255)";
+                x[i].className += " modified";
 
-                input = x[i].nextSibling;
-                while (input.nodeType != Node.ELEMENT_NODE)
-                    input = input.nextSibling;
+                inputCell = nextSiblingElement(x[i]);
+                input = firstChildElement(inputCell);
 
-                input = input.firstChild;
-                while (input.nodeType != Node.ELEMENT_NODE)
-                    input = input.nextSibling;
-
-                if (input.tagName == "INPUT") {
+                if (input.tagName === "INPUT") {
+                    // Match value cell innerText to extract integer value and optionals units.
                     match = x[i].innerText.match(/[^\d]*([\d.]+)([%bitpskmg]*)/i);
+                    // Set input field to integer value.
                     input.value = parseInt(match[1]);
+                    // Units are specified.
                     if (match[2]) {
-                        do {
-                            input = input.nextSibling;
-                        } while (input && input.nodeType != Node.ELEMENT_NODE);
-
-                        if (input && input.tagName == "SELECT")
-                            input.value = match[2].toLowerCase();
+                        // Check if next to text field exists a select, if it exists set selected option to units.
+                        select = nextSiblingElement(input);
+                        if (select && select.tagName === "SELECT")
+                            select.value = match[2].toLowerCase();
                     }
                 }
             }
@@ -127,6 +150,10 @@
 
     .tcgui-input-cell {
         text-align: left;
+    }
+
+    .tcgui-value-cell.modified {
+        background: rgb(121, 168, 255);
     }
 
     .button-remove {

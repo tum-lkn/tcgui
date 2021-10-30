@@ -117,7 +117,7 @@ def new_rule(interface):
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
-    return redirect(url_for("main"))
+    return redirect(url_for("main") + "#" + interface)
 
 
 @app.route("/remove_rule/<interface>", methods=["POST"])
@@ -127,7 +127,7 @@ def remove_rule(interface):
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
-    return redirect(url_for("main"))
+    return redirect(url_for("main") + "#" + interface)
 
 
 def get_active_rules():
