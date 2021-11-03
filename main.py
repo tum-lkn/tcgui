@@ -85,6 +85,8 @@ def new_rule(interface):
     rate = request.form["Rate"]
     rate_unit = request.form["rate_unit"]
 
+    interface = filter_interface_name(interface)
+
     # remove old setup
     command = "tc qdisc del dev %s root netem" % interface
     command = command.split(" ")
@@ -122,12 +124,18 @@ def new_rule(interface):
 
 @app.route("/remove_rule/<interface>", methods=["POST"])
 def remove_rule(interface):
+    interface = filter_interface_name(interface)
+
     # remove old setup
     command = "tc qdisc del dev %s root netem" % interface
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
     return redirect(url_for("main") + "#" + interface)
+
+
+def filter_interface_name(interface):
+    return re.sub(r"[^A-Za-z0-9_-]+", "", interface)
 
 
 def get_active_rules():
