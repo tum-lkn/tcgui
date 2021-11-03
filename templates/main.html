@@ -12,101 +12,148 @@
     <h1>TCGUI - {{ rules|length }} Available Interfaces</h1>
     <ul>
         {% for rule in rules %}
-            <li><a href="#{{ rule['name'] }}">{{ rule['name'] }}</a></li>
+        <li><a href="#{{ rule['name'] }}">{{ rule['name'] }}</a></li>
         {% endfor %}
     </ul>
     {% for rule in rules %}
-        <div>
-            <h2 id="{{ rule['name'] }}">{{ rule['name'] }}</h2>
-            <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
-                <table class="pure-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Current Value</th>
-                            <th>New Value</th>
-                            <th>Variance / Correlation</th>
-                            <th>New Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>Rate</td>
-			            <td class="tcgui-value-cell">{{ rule['rate'] }}</td>
-                        <td class="tcgui-input-cell">
-                            <input type="number" name="Rate" size="5">
-                            <select name="rate_unit">
-                                {% for unit in units %}
-                                <option value="{{ unit }}"{% if unit == standard_unit %} selected{% endif %}>{{ unit }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Delay</td>
-                        <td class="tcgui-value-cell">{{ rule['delay'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Delay" size="5"> ms</td>
-                        <td class="tcgui-value-cell">±{{ rule['delayVariance'] }}</td>
-                        <td class="tcgui-input-cell">±<input type="number" name="DelayVariance" size="5"> ms</td>
-                    </tr>
-                    <tr>
-                        <td>Loss</td>
-                        <td class="tcgui-value-cell">{{ rule['loss'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Loss" size="5"> %</td>
-                        <td class="tcgui-value-cell">{{ rule['lossCorrelation'] }}</td>
-                        <td class="tcgui-input-cell"> <input type="number" name="LossCorrelation" size="5"> %</td>
-                    </tr>
-                    <tr>
-                        <td>Duplicate</td>
-                        <td class="tcgui-value-cell">{{ rule['duplicate'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Duplicate" size="5"> %</td>
-                    </tr>
-                    <tr>
-                        <td>Reorder</td>
-                        <td class="tcgui-value-cell">{{ rule['reorder'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Reorder" size="5"> %</td>
-                        <td class="tcgui-value-cell">{{ rule['reorderCorrelation'] }}</td>
-                        <td class="tcgui-input-cell"> <input type="number" name="ReorderCorrelation" size="5"> %</td>
-                    </tr>
-                    <tr>
-                        <td>Corrupt</td>
-                        <td class="tcgui-value-cell">{{ rule['corrupt'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Corrupt" size="5"> %</td>
-                    </tr>
-                    <tr>
-                        <td>Limit</td>
-                        <td class="tcgui-value-cell">{{ rule['limit'] }}</td>
-                        <td class="tcgui-input-cell"><input type="number" name="Limit" size="5"></td>
-                    </tr>
+    <div>
+        <h2 id="{{ rule['name'] }}">{{ rule['name'] }}</h2>
+        <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
+            <table class="pure-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Current Value</th>
+                    <th>New Value</th>
+                    <th>Variance / Correlation</th>
+                    <th>New Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Rate</td>
+                    <td class="tcgui-value-cell">{{ rule['rate'] }}</td>
+                    <td class="tcgui-input-cell">
+                        <input type="number" name="Rate" size="5">
+                        <select name="rate_unit">
+                            {% for unit in units %}
+                            <option value="{{ unit }}" {% if unit== standard_unit %} selected{% endif %}>{{ unit }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Delay</td>
+                    <td class="tcgui-value-cell">{{ rule['delay'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Delay" size="5"> ms</td>
+                    <td class="tcgui-value-cell">±{{ rule['delayVariance'] }}</td>
+                    <td class="tcgui-input-cell">±<input type="number" name="DelayVariance" size="5"> ms</td>
+                </tr>
+                <tr>
+                    <td>Loss</td>
+                    <td class="tcgui-value-cell">{{ rule['loss'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Loss" size="5"> %</td>
+                    <td class="tcgui-value-cell">{{ rule['lossCorrelation'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="LossCorrelation" size="5"> %</td>
+                </tr>
+                <tr>
+                    <td>Duplicate</td>
+                    <td class="tcgui-value-cell">{{ rule['duplicate'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Duplicate" size="5"> %</td>
+                </tr>
+                <tr>
+                    <td>Reorder</td>
+                    <td class="tcgui-value-cell">{{ rule['reorder'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Reorder" size="5"> %</td>
+                    <td class="tcgui-value-cell">{{ rule['reorderCorrelation'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="ReorderCorrelation" size="5"> %</td>
+                </tr>
+                <tr>
+                    <td>Corrupt</td>
+                    <td class="tcgui-value-cell">{{ rule['corrupt'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Corrupt" size="5"> %</td>
+                </tr>
+                <tr>
+                    <td>Limit</td>
+                    <td class="tcgui-value-cell">{{ rule['limit'] }}</td>
+                    <td class="tcgui-input-cell"><input type="number" name="Limit" size="5"></td>
+                </tr>
                 </tbody>
-                </table>
-                <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
-            </form>
-            <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
-                <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
-            </form>
-        </div>
+            </table>
+            <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
+        </form>
+        <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
+            <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
+        </form>
+    </div>
     {% endfor %}
 </div>
 <script type="text/javascript">
+    (function() {
+        /** Get next sibling of specified node or element.
+         *
+         * @param {Node|HTMLElement} element Element to search for the next sibling.
+         * @returns {HTMLElement|null} Next sibling, null it not exists.
+         */
+        function nextSiblingElement(element) {
+            do {
+                element = element.nextSibling;
+            } while (element && element.nodeType !== Node.ELEMENT_NODE)
 
-    var x = document.getElementsByClassName("tcgui-value-cell");
-    var i;
-    for (i = 0; i < x.length; i++) {
-        if(x[i].innerHTML.indexOf("None") === -1 ){
-            x[i].style.backgroundColor = "rgb(121, 168, 255)";
+            return element;
         }
-        
-    } 
+
+        /** Get first child of specified node or element.
+         *
+         * @param {Node|HTMLElement} element Element to search for the first child of.
+         * @returns {HTMLElement|null} First child element, null if not exists.
+         */
+        function firstChildElement(element) {
+            element = element.firstChild;
+
+            if (element && element.nodeType !== Node.ELEMENT_NODE)
+                element = nextSiblingElement(element)
+
+            return element;
+        }
+
+        var x = document.getElementsByClassName("tcgui-value-cell");
+        var i, inputCell, input, select, match;
+        for (i = 0; i < x.length; i++) {
+            if (x[i].innerHTML.indexOf("None") === -1) {
+                x[i].className += " modified";
+
+                inputCell = nextSiblingElement(x[i]);
+                input = firstChildElement(inputCell);
+
+                if (input.tagName === "INPUT") {
+                    // Match value cell innerText to extract integer value and optionals units.
+                    match = x[i].innerText.match(/[^\d]*([\d.]+)([%bitpskmg]*)/i);
+                    // Set input field to integer value.
+                    input.value = parseInt(match[1]);
+                    // Units are specified.
+                    if (match[2]) {
+                        // Check if next to text field exists a select, if it exists set selected option to units.
+                        select = nextSiblingElement(input);
+                        if (select && select.tagName === "SELECT")
+                            select.value = match[2].toLowerCase();
+                    }
+                }
+            }
+        }
+    })();
 </script>
 <style>
-    th,td { 
-        text-align: center; 
-
+    th, td {
+        text-align: center;
     }
 
     .tcgui-input-cell {
         text-align: left;
+    }
+
+    .tcgui-value-cell.modified {
+        background: rgb(121, 168, 255);
     }
 
     .button-remove {
