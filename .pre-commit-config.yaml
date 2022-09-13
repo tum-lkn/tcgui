@@ -89,7 +89,7 @@ repos:
     rev: v1.5.3
     hooks:
       - id: autoflake
-  # - repo: https://github.com/crate-ci/typos
-  #   rev: v1.12.4
-  #   hooks:
-  #     - id: typos
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.12.4
+    hooks:
+      - id: typos

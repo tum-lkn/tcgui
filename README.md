@@ -10,11 +10,10 @@ A lightweight Python-based Web-GUI for Linux traffic control (`tc`) to set, view
 
 ## Requirements
 
-- Tested with Ubuntu 16.04 LTS & Ubuntu 18.04 LTS & Raspbian 4.14.98-v7+ (stretch, Debian 9.8)
 - `netem` tools & `python3-flask` are required
-  - Ubuntu 16.04 : Install with `sudo apt install iproute python3-flask`
   - Ubuntu 18.04 : Install with `sudo apt install iproute2 python3-flask`
   - Ubuntu 20.04 : Install with `sudo apt install iproute2 python3-flask`
+  - Ubuntu 22.04 : Install with `sudo apt install iproute2 python3-flask`
 - More information:
   - [network_emulation_loss](https://calomel.org/network_loss_emulation.html)
   - [netem](https://wiki.linuxfoundation.org/networking/netem)
@@ -90,3 +89,27 @@ iperf3 -c 192.168.210.3 -t 300
 ```
 
 Now access the GUI at [http://192.168.210.2:5000/](http://192.168.210.2:5000/) and change the rate of interface eth1. You should see the sending/receiving rate to decrease to the set amount.
+
+### pre-commit git hooks
+
+#### Setup
+
+We use [pre-commit](https://pre-commit.com/) to manage our git pre-commit hooks.
+`pre-commit` is automatically installed from `requirements.txt`.
+To set it up, call
+
+```sh
+git config --unset-all core.hooksPath  # may fail if you don't have any hooks set, but that's ok
+pre-commit install --overwrite
+```
+
+#### Usage
+
+With `pre-commit`, you don't use your linters/formatters directly anymore, but through `pre-commit`:
+
+```sh
+pre-commit run --file path/to/file1.cpp tools/second_file.py  # run on specific file(s)
+pre-commit run --all-files  # run on all files tracked by git
+pre-commit run --from-ref origin/master --to-ref HEAD  # run on all files changed on current branch, compared to master
+pre-commit run <hook_id> --file <path_to_file>  # run specific hook on specific file
+```
