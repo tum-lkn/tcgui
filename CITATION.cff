@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "TUM"
+  given-names: "LKN"
+- family-names: "TUM"
+  given-names: "LMT"
+title: "tcgui: A lightweight Python-based Web-GUI for Linux traffic control"
+date-released: 2016-07-05
+url: "https://github.com/tum-lkn/tcgui"
