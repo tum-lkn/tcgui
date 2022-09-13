@@ -1,2 +1,2 @@
-black
 flask
+pre-commit

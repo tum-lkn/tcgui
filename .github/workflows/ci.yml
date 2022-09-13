@@ -1,37 +1,30 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Check code format
-      run: |
-        make check_format
-
-  super-lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Lint Code Base
-      uses: docker://github/super-linter:v2.1.0
-      env:
-        VALIDATE_PYTHON: false
-        VALIDATE_CSS: false
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Check
+        run: pre-commit run --all-files
 
   docker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Docker Build
-      run: docker build . --tag tcgui:$(date +%s)
+      - uses: actions/checkout@v3
+      - name: Docker Build
+        run: docker build . --tag tcgui:$(date +%s)

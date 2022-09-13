@@ -1,10 +1,12 @@
-import subprocess
+"""TC web GUI."""
+
+import argparse
 import os
 import re
-import argparse
+import subprocess
+import sys
 
-from flask import Flask, render_template, redirect, request, url_for
-
+from flask import Flask, redirect, render_template, request, url_for
 
 BANDWIDTH_UNITS = [
     "bit",  # Bits per second
@@ -23,15 +25,15 @@ STANDARD_UNIT = "mbit"
 
 
 app = Flask(__name__)
-pattern = None
-dev_list = None
+PATTERN = None
+DEV_LIST = None
 
 app.static_folder = "static"
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="TC web GUI",
+        description=__doc__,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
@@ -88,33 +90,33 @@ def new_rule(interface):
     interface = filter_interface_name(interface)
 
     # remove old setup
-    command = "tc qdisc del dev %s root netem" % interface
+    command = f"tc qdisc del dev {interface} root netem"
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
 
     # apply new setup
-    command = "tc qdisc add dev %s root netem" % interface
+    command = f"tc qdisc add dev {interface} root netem"
     if rate != "":
-        command += " rate %s%s" % (rate, rate_unit)
+        command += f" rate {rate}{rate_unit}"
     if delay != "":
-        command += " delay %sms" % delay
+        command += f" delay {delay}ms"
         if delay_variance != "":
-            command += " %sms" % delay_variance
+            command += f" {delay_variance}ms"
     if loss != "":
-        command += " loss %s%%" % loss
+        command += f" loss {loss}%%"
         if loss_correlation != "":
-            command += " %s%%" % loss_correlation
+            command += f" {loss_correlation}%%"
     if duplicate != "":
-        command += " duplicate %s%%" % duplicate
+        command += f" duplicate {duplicate}%%"
     if reorder != "":
-        command += " reorder %s%%" % reorder
+        command += f" reorder {reorder}%%"
         if reorder_correlation != "":
-            command += " %s%%" % reorder_correlation
+            command += f" {reorder_correlation}%%"
     if corrupt != "":
-        command += " corrupt %s%%" % corrupt
+        command += f" corrupt {corrupt}%%"
     if limit != "":
-        command += " limit %s" % limit
+        command += f" limit {limit}"
     print(command)
     command = command.split(" ")
     proc = subprocess.Popen(command)
@@ -127,7 +129,7 @@ def remove_rule(interface):
     interface = filter_interface_name(interface)
 
     # remove old setup
-    command = "tc qdisc del dev %s root netem" % interface
+    command = f"tc qdisc del dev {interface} root netem"
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
@@ -154,6 +156,7 @@ def get_active_rules():
 
 
 def parse_rule(split_rule):
+    # pylint: disable=too-many-branches
     rule = {
         "name": None,
         "rate": None,
@@ -170,16 +173,16 @@ def parse_rule(split_rule):
     i = 0
     for argument in split_rule:
         if argument == "dev":
-            # Both regex pattern and dev name can be given
-            # An interface could match the pattern and/or
+            # Both regex PATTERN and dev name can be given
+            # An interface could match the PATTERN and/or
             # be in the interface list
-            if pattern is None and dev_list is None:
+            if PATTERN is None and DEV_LIST is None:
                 rule["name"] = split_rule[i + 1]
-            if pattern:
-                if pattern.match(split_rule[i + 1]):
+            if PATTERN:
+                if PATTERN.match(split_rule[i + 1]):
                     rule["name"] = split_rule[i + 1]
-            if dev_list:
-                if split_rule[i + 1] in dev_list:
+            if DEV_LIST:
+                if split_rule[i + 1] in DEV_LIST:
                     rule["name"] = split_rule[i + 1]
         elif argument == "rate":
             rule["rate"] = split_rule[i + 1].split("Mbit")[0]
@@ -211,13 +214,13 @@ if __name__ == "__main__":
             "You need to have root privileges to run this script.\n"
             "Please try again, this time using 'sudo'. Exiting."
         )
-        exit(1)
+        sys.exit(1)
 
     # TC Variables
     args = parse_arguments()
 
-    pattern = re.compile(args.regex) if args.regex else args.regex
-    dev_list = args.dev
+    PATTERN = re.compile(args.regex) if args.regex else args.regex
+    DEV_LIST = args.dev
 
     # Flask Variable
     app_args = {"host": args.ip, "port": args.port}
