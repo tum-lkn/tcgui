@@ -152,6 +152,7 @@ def get_active_rules():
         if rule["name"] and rule["name"] not in dev:
             rules.append(rule)
             dev.add(rule["name"])
+            rules.sort(key=lambda x: x["name"])
     return rules
 
 
