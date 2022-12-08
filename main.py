@@ -104,17 +104,17 @@ def new_rule(interface):
         if delay_variance != "":
             command += f" {delay_variance}ms"
     if loss != "":
-        command += f" loss {loss}%%"
+        command += f" loss {loss}%"
         if loss_correlation != "":
-            command += f" {loss_correlation}%%"
+            command += f" {loss_correlation}%"
     if duplicate != "":
-        command += f" duplicate {duplicate}%%"
+        command += f" duplicate {duplicate}%"
     if reorder != "":
-        command += f" reorder {reorder}%%"
+        command += f" reorder {reorder}%"
         if reorder_correlation != "":
-            command += f" {reorder_correlation}%%"
+            command += f" {reorder_correlation}%"
     if corrupt != "":
-        command += f" corrupt {corrupt}%%"
+        command += f" corrupt {corrupt}%"
     if limit != "":
         command += f" limit {limit}"
     print(command)
