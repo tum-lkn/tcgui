@@ -2,7 +2,7 @@ default_stages:
   - commit
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -37,7 +37,7 @@ repos:
           - '2'
           - --implicit_start
   - repo: https://github.com/psf/black
-    rev: 22.8.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3
@@ -63,7 +63,7 @@ repos:
           - --wrap-descriptions
           - '81'
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 6.0.0
     hooks:
       - id: flake8
         additional_dependencies:
@@ -72,11 +72,11 @@ repos:
           - flake8-pytest-style
           - flake8-comprehensions
   - repo: https://github.com/PyCQA/pylint
-    rev: v2.15.0
+    rev: v2.15.8
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
         args:
@@ -86,10 +86,10 @@ repos:
     hooks:
       - id: yesqa
   - repo: https://github.com/PyCQA/autoflake
-    rev: v1.5.3
+    rev: v2.0.0
     hooks:
       - id: autoflake
   - repo: https://github.com/crate-ci/typos
-    rev: v1.12.4
+    rev: typos-dict-v0.9.13
     hooks:
       - id: typos
