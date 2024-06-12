@@ -68,8 +68,9 @@ def parse_arguments():
 @app.route("/")
 def main():
     rules = get_active_rules()
+    interfaces = get_interfaces()
     return render_template(
-        "main.html", rules=rules, units=BANDWIDTH_UNITS, standard_unit=STANDARD_UNIT
+        "main.html", rules=rules, units=BANDWIDTH_UNITS, standard_unit=STANDARD_UNIT, interfaces=interfaces
     )
 
 
@@ -150,16 +151,40 @@ def get_active_rules():
         arguments = line.split()
         rule = parse_rule(arguments)
         if rule["name"] and rule["name"] not in dev:
+            rule["ip"] = get_interface_ip(rule["name"])
             rules.append(rule)
             dev.add(rule["name"])
             rules.sort(key=lambda x: x["name"])
     return rules
 
 
+def get_interfaces():
+    proc = subprocess.Popen(["ip", "-o", "-4", "addr", "show"], stdout=subprocess.PIPE)
+    output = proc.communicate()[0].decode()
+    interfaces = {}
+    for line in output.split('\n'):
+        if line:
+            parts = line.split()
+            iface = parts[1]
+            ip = parts[3].split('/')[0]
+            interfaces[iface] = ip
+    return interfaces
+
+
+def get_interface_ip(interface):
+    proc = subprocess.Popen(["ip", "addr", "show", interface], stdout=subprocess.PIPE)
+    output = proc.communicate()[0].decode()
+    match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
+    if match:
+        return match.group(1)
+    return "No IP found"
+
+
 def parse_rule(split_rule):
     # pylint: disable=too-many-branches
     rule = {
         "name": None,
+        "ip": None,
         "rate": None,
         "delay": None,
         "delayVariance": None,
