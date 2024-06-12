@@ -12,12 +12,13 @@
     <h1>TCGUI - {{ rules|length }} Available Interfaces</h1>
     <ul>
         {% for rule in rules %}
-        <li><a href="#{{ rule['name'] }}">{{ rule['name'] }}</a></li>
+        <li><a href="#{{ rule['name'] }}">{{ rule['name'] }} ({{ rule['ip'] }})</a></li>
         {% endfor %}
     </ul>
+
     {% for rule in rules %}
     <div>
-        <h2 id="{{ rule['name'] }}">{{ rule['name'] }}</h2>
+        <h2 id="{{ rule['name'] }}">{{ rule['name'] }} ({{ rule['ip'] }})</h2>
         <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
             <table class="pure-table">
                 <thead>
@@ -37,7 +38,7 @@
                         <input type="number" name="Rate" size="5">
                         <select name="rate_unit">
                             {% for unit in units %}
-                            <option value="{{ unit }}" {% if unit== standard_unit %} selected{% endif %}>{{ unit }}</option>
+                            <option value="{{ unit }}" {% if unit == standard_unit %} selected{% endif %}>{{ unit }}</option>
                             {% endfor %}
                         </select>
                     </td>
@@ -80,10 +81,10 @@
                 </tr>
                 </tbody>
             </table>
-            <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
+            <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} ({{ rule['ip'] }}) Rules">
         </form>
         <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
-            <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
+            <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} ({{ rule['ip'] }}) Rules">
         </form>
     </div>
     {% endfor %}
