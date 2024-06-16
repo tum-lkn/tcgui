@@ -159,8 +159,7 @@ def get_active_rules():
 
 
 def get_interfaces():
-    proc = subprocess.Popen(["ip", "-o", "-4", "addr", "show"], stdout=subprocess.PIPE)
-    output = proc.communicate()[0].decode()
+    output = subprocess.check_output(["ip", "-o", "-4", "addr", "show"]).decode(sys.stdout.encoding)
     interfaces = {}
     for line in output.split('\n'):
         if line:
