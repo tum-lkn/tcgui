@@ -174,9 +174,7 @@ def get_interface_ip(interface):
     proc = subprocess.Popen(["ip", "addr", "show", interface], stdout=subprocess.PIPE)
     output = proc.communicate()[0].decode()
     match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
-    if match:
-        return match.group(1)
-    return "No IP found"
+    return match.group(1) if match else "No IP found"
 
 
 def parse_rule(split_rule):
