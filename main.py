@@ -171,7 +171,8 @@ def get_interfaces():
 
 
 def get_interface_ip(interface):
-    output = subprocess.check_output(["ip", "-o", "-4", "addr", "show"]).decode(sys.stdout.encoding)
+    proc = subprocess.Popen(["ip", "-o", "-4", "addr", "show"], stdout=subprocess.PIPE)
+    output = proc.communicate()[0].decode()
     match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
     return match.group(1) if match else "No IP found"
 
