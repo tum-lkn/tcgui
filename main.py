@@ -159,24 +159,31 @@ def get_active_rules():
 
 
 def get_interfaces():
-    result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True)
-    output = result.stdout
-    interfaces = {}
-    for line in output.split('\n'):
-        if line:
-            parts = line.split()
-            iface = parts[1]
-            ip = parts[3].split('/')[0]
-            interfaces[iface] = ip
-    return interfaces
+    try:
+        result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True, check=True)
+        output = result.stdout
+        interfaces = {}
+        for line in output.split('\n'):
+            if line:
+                parts = line.split()
+                iface = parts[1]
+                ip = parts[3].split('/')[0]
+                interfaces[iface] = ip
+        return interfaces
+    except subprocess.CalledProcessError as e:
+        print(f"Error retrieving interfaces: {e}")
+        return {}
 
 
 def get_interface_ip(interface):
-    result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True)
-    output = result.stdout
-    match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
-    return match.group(1) if match else "No IP found"
-
+    try:
+        result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True, check=True)
+        output = result.stdout
+        match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
+        return match.group(1) if match else "No IP found"
+    except subprocess.CalledProcessError as e:
+        print(f"Error retrieving IP for interface {interface}: {e}")
+        return "No IP found"
 
 def parse_rule(split_rule):
     # pylint: disable=too-many-branches
