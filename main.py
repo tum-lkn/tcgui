@@ -159,7 +159,8 @@ def get_active_rules():
 
 
 def get_interfaces():
-    output = subprocess.check_output(["ip", "-o", "-4", "addr", "show"]).decode(sys.stdout.encoding)
+    result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True)
+    output = result.stdout
     interfaces = {}
     for line in output.split('\n'):
         if line:
@@ -171,8 +172,8 @@ def get_interfaces():
 
 
 def get_interface_ip(interface):
-    proc = subprocess.Popen(["ip", "-o", "-4", "addr", "show"], stdout=subprocess.PIPE)
-    output = proc.communicate()[0].decode()
+    result = subprocess.run(["ip", "-o", "-4", "addr", "show"], capture_output=True, text=True)
+    output = result.stdout
     match = re.search(r'inet (\d+\.\d+\.\d+\.\d+)', output)
     return match.group(1) if match else "No IP found"
 
