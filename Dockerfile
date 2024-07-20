@@ -1,6 +1,6 @@
 FROM python:3.8-alpine
 
-RUN apk add --no-cache iproute2 && \
+RUN apk add --no-cache iproute2 mtr curl tcpdump net-tools iperf3 && \
     rm -rf /var/cache/apk/*
 
 RUN pip3 install Flask
