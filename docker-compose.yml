@@ -10,4 +10,4 @@ services:
     cap_add:
       - NET_ADMIN
     ## Uncomment if you want to control the traffic of the host machine:
-    # network_mode: host
+    network_mode: host
