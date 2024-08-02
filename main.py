@@ -145,6 +145,23 @@ def filter_interface_name(interface):
     return re.sub(r"[^A-Za-z0-9_-]+", "", interface)
 
 
+def run_ip_command(command_args):
+    """
+    Runs the 'ip' command with the specified arguments and returns the output.
+    """
+    try:
+        result = subprocess.run(
+            command_args,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command '{command_args}': {e}")
+        return ""
+
+
 def get_active_rules():
     proc = subprocess.Popen(["tc", "qdisc"], stdout=subprocess.PIPE)
     output = proc.communicate()[0].decode()
@@ -163,41 +180,21 @@ def get_active_rules():
 
 
 def get_interfaces():
-    try:
-        result = subprocess.run(
-            ["ip", "-o", "-4", "addr", "show"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        output = result.stdout
-        interfaces = {}
-        for line in output.split("\n"):
-            if line:
-                parts = line.split()
-                iface = parts[1]
-                ip = parts[3].split("/")[0]
-                interfaces[iface] = ip
-        return interfaces
-    except subprocess.CalledProcessError as e:
-        print(f"Error retrieving interfaces: {e}")
-        return {}
+    output = run_ip_command(["ip", "-o", "-4", "addr", "show"])
+    interfaces = {}
+    for line in output.split("\n"):
+        if line:
+            parts = line.split()
+            iface = parts[1]
+            ip = parts[3].split("/")[0]
+            interfaces[iface] = ip
+    return interfaces
 
 
 def get_interface_ip(interface):
-    try:
-        result = subprocess.run(
-            ["ip", "-o", "-4", "addr", "show", interface],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        output = result.stdout
-        match = re.search(r"inet (\d+\.\d+\.\d+\.\d+)", output)
-        return match.group(1) if match else "No IP found"
-    except subprocess.CalledProcessError as e:
-        print(f"Error retrieving IP for interface {interface}: {e}")
-        return "No IP found"
+    output = run_ip_command(["ip", "-o", "-4", "addr", "show", interface])
+    match = re.search(r"inet (\d+\.\d+\.\d+\.\d+)", output)
+    return match.group(1) if match else "No IP found"
 
 
 def parse_rule(split_rule):
