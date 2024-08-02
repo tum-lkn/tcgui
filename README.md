@@ -49,6 +49,16 @@ You can change the configuration using these Environment Variables:
 - **TCGUI_DEV** - The interfaces to restrict to
 - **TCGUI_REGEX** - A regex to match interfaces
 
+### Docker-Compose
+
+```shell
+docker compose up --build
+
+## To run in the background:
+docker compose up -d --build
+```
+> Make sure you read the line of `network_mode` inside the `docker-compose.yml`
+
 If using an interface bridge, docker might cause issue with the bridge. ([askubunut](https://askubuntu.com/questions/1073501/docker-breaks-network-bridging-to-virtual-machines))
 To fix this, create a file `/etc/docker/daemon.json` with the following contents:
 
