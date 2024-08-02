@@ -187,7 +187,7 @@ def get_interfaces():
 def get_interface_ip(interface):
     try:
         result = subprocess.run(
-            ["ip", "-o", "-4", "addr", "show"],
+            ["ip", "-o", "-4", "addr", "show", interface],
             capture_output=True,
             text=True,
             check=True,
