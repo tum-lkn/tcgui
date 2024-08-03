@@ -146,9 +146,7 @@ def filter_interface_name(interface):
 
 
 def run_ip_command(command_args):
-    """
-    Runs the 'ip' command with the specified arguments and returns the output.
-    """
+    """Runs the 'ip' command with the specified arguments and returns the output."""
     try:
         result = subprocess.run(
             command_args,
