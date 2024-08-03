@@ -37,7 +37,7 @@ repos:
           - '2'
           - --implicit_start
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.8.0
     hooks:
       - id: black
         language_version: python3
@@ -73,11 +73,11 @@ repos:
           - flake8-comprehensions
           - setuptools
   - repo: https://github.com/PyCQA/pylint
-    rev: v3.2.5
+    rev: v3.2.6
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.17.0
     hooks:
       - id: pyupgrade
         args:
@@ -91,6 +91,6 @@ repos:
     hooks:
       - id: autoflake
   - repo: https://github.com/crate-ci/typos
-    rev: v1.23.2
+    rev: v1.23.6
     hooks:
       - id: typos
