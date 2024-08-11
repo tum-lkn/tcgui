@@ -2,7 +2,7 @@ default_stages:
   - commit
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -18,14 +18,14 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.16
+    rev: 0.7.17
     hooks:
       - id: mdformat
         additional_dependencies:
           - mdformat-gfm
           - mdformat-black
   - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.2.2
+    rev: 0.2.3
     hooks:
       - id: yamlfmt
         args:
@@ -37,23 +37,23 @@ repos:
           - '2'
           - --implicit_start
   - repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 24.8.0
     hooks:
       - id: black
         language_version: python3
       - id: black-jupyter
         language_version: python3
   - repo: https://github.com/asottile/blacken-docs
-    rev: v1.12.1
+    rev: 1.18.0
     hooks:
       - id: blacken-docs
   - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.13.2
     hooks:
       - id: isort
         args: [--profile, black]
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.5.0
+    rev: v1.7.5
     hooks:
       - id: docformatter
         args:
@@ -63,7 +63,7 @@ repos:
           - --wrap-descriptions
           - '81'
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+    rev: 7.1.1
     hooks:
       - id: flake8
         additional_dependencies:
@@ -71,25 +71,26 @@ repos:
           - flake8-bugbear
           - flake8-pytest-style
           - flake8-comprehensions
+          - setuptools
   - repo: https://github.com/PyCQA/pylint
-    rev: v2.15.8
+    rev: v3.2.6
     hooks:
       - id: pylint
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+    rev: v3.16.0
     hooks:
       - id: pyupgrade
         args:
           - --py38-plus
   - repo: https://github.com/asottile/yesqa
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: yesqa
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.0
+    rev: v2.3.1
     hooks:
       - id: autoflake
   - repo: https://github.com/crate-ci/typos
-    rev: typos-dict-v0.9.13
+    rev: v1.23.6
     hooks:
       - id: typos

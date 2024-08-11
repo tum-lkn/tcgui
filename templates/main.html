@@ -4,20 +4,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>tcgui</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='gui_styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #1e88e5;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 auto;
+            width: fit-content; /* Adjust to fit the content */
+        }
+
+        ul li {
+            text-align: left;
+            margin-right: 10px;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #1e88e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1e88e5;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f8e9;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pure-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pure-button-primary {
+            background-color: #1e88e5;
+        }
+
+        .button-remove {
+            background-color: #d32f2f;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input, .input-group select {
+            margin-right: 10px;
+        }
+
+        .tcgui-value-cell.modified {
+            background: rgb(121, 168, 255);
+        }
+
+        .tcgui-input-cell {
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
 
-<div style="padding:2em;">
+<div class="container">
     <h1>TCGUI - {{ rules|length }} Available Interfaces</h1>
     <ul>
         {% for rule in rules %}
-        <li><a href="#{{ rule['name'] }}">{{ rule['name'] }}</a></li>
+        <li><a href="#{{ rule['name'] }}">{{ rule['name'] }} ({{ rule['ip'] }})</a></li>
         {% endfor %}
     </ul>
+
     {% for rule in rules %}
     <div>
-        <h2 id="{{ rule['name'] }}">{{ rule['name'] }}</h2>
+        <h2 id="{{ rule['name'] }}">{{ rule['name'] }} ({{ rule['ip'] }})</h2>
         <form method="POST" action="{{ url_for('new_rule', interface=rule['name']) }}">
             <table class="pure-table">
                 <thead>
@@ -34,12 +135,14 @@
                     <td>Rate</td>
                     <td class="tcgui-value-cell">{{ rule['rate'] }}</td>
                     <td class="tcgui-input-cell">
-                        <input type="number" name="Rate" size="5">
-                        <select name="rate_unit">
-                            {% for unit in units %}
-                            <option value="{{ unit }}" {% if unit== standard_unit %} selected{% endif %}>{{ unit }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="input-group">
+                            <input type="number" name="Rate" size="5">
+                            <select name="rate_unit">
+                                {% for unit in units %}
+                                <option value="{{ unit }}" {% if unit == standard_unit %} selected{% endif %}>{{ unit }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -80,14 +183,19 @@
                 </tr>
                 </tbody>
             </table>
-            <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} Rules">
+            <div class="btn-container">
+                <input class="pure-button pure-button-primary" type="submit" value="Apply {{ rule['name'] }} ({{ rule['ip'] }}) Rules">
+            </div>
         </form>
         <form method="POST" action="{{ url_for('remove_rule', interface= rule['name']) }}">
-            <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} Rules">
+            <div class="btn-container">
+                <input class="button-remove pure-button" type="submit" value="Remove {{ rule['name'] }} ({{ rule['ip'] }}) Rules">
+            </div>
         </form>
     </div>
     {% endfor %}
 </div>
+
 <script type="text/javascript">
     (function() {
         /** Get next sibling of specified node or element.
@@ -127,7 +235,7 @@
                 input = firstChildElement(inputCell);
 
                 if (input.tagName === "INPUT") {
-                    // Match value cell innerText to extract integer value and optionals units.
+                    // Match value cell innerText to extract integer value and optional units.
                     match = x[i].innerText.match(/[^\d]*([\d.]+)([%bitpskmg]*)/i);
                     // Set input field to integer value.
                     input.value = parseInt(match[1]);
@@ -143,27 +251,5 @@
         }
     })();
 </script>
-<style>
-    th, td {
-        text-align: center;
-    }
-
-    .tcgui-input-cell {
-        text-align: left;
-    }
-
-    .tcgui-value-cell.modified {
-        background: rgb(121, 168, 255);
-    }
-
-    .button-remove {
-        color: white;
-        background: rgb(202, 60, 60);
-    }
-
-    .pure-button {
-        margin-top: .5em;
-    }
-</style>
 </body>
 </html>

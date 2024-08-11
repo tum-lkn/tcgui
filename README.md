@@ -6,7 +6,7 @@
 
 A lightweight Python-based Web-GUI for Linux traffic control (`tc`) to set, view and delete traffic shaping rules. The Web-GUI is intended for short-term isolated testbeds or classroom scenarios and does not contain any security mechanisms.
 
-![tcgui screenshot](tcgui.png)
+![tcgui screenshot](tcgui-new.png)
 
 ## Requirements
 
@@ -48,6 +48,17 @@ You can change the configuration using these Environment Variables:
 - **TCGUI_PORT** - *Default `5000`* - Use to change the listening port
 - **TCGUI_DEV** - The interfaces to restrict to
 - **TCGUI_REGEX** - A regex to match interfaces
+
+### Docker-Compose
+
+```shell
+docker compose up --build
+
+## To run in the background:
+docker compose up -d --build
+```
+
+> Make sure you read the line of `network_mode` inside the `docker-compose.yml`
 
 If using an interface bridge, docker might cause issue with the bridge. ([askubunut](https://askubuntu.com/questions/1073501/docker-breaks-network-bridging-to-virtual-machines))
 To fix this, create a file `/etc/docker/daemon.json` with the following contents:

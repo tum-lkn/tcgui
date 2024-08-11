@@ -68,8 +68,13 @@ def parse_arguments():
 @app.route("/")
 def main():
     rules = get_active_rules()
+    interfaces = get_interfaces()
     return render_template(
-        "main.html", rules=rules, units=BANDWIDTH_UNITS, standard_unit=STANDARD_UNIT
+        "main.html",
+        rules=rules,
+        units=BANDWIDTH_UNITS,
+        standard_unit=STANDARD_UNIT,
+        interfaces=interfaces,
     )
 
 
@@ -140,6 +145,21 @@ def filter_interface_name(interface):
     return re.sub(r"[^A-Za-z0-9_-]+", "", interface)
 
 
+def run_ip_command(command_args):
+    """Runs the 'ip' command with the specified arguments and returns the output."""
+    try:
+        result = subprocess.run(
+            command_args,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command '{command_args}': {e}")
+        return ""
+
+
 def get_active_rules():
     proc = subprocess.Popen(["tc", "qdisc"], stdout=subprocess.PIPE)
     output = proc.communicate()[0].decode()
@@ -150,16 +170,36 @@ def get_active_rules():
         arguments = line.split()
         rule = parse_rule(arguments)
         if rule["name"] and rule["name"] not in dev:
+            rule["ip"] = get_interface_ip(rule["name"])
             rules.append(rule)
             dev.add(rule["name"])
             rules.sort(key=lambda x: x["name"])
     return rules
 
 
+def get_interfaces():
+    output = run_ip_command(["ip", "-o", "-4", "addr", "show"])
+    interfaces = {}
+    for line in output.split("\n"):
+        if line:
+            parts = line.split()
+            iface = parts[1]
+            ip = parts[3].split("/")[0]
+            interfaces[iface] = ip
+    return interfaces
+
+
+def get_interface_ip(interface):
+    output = run_ip_command(["ip", "-o", "-4", "addr", "show", interface])
+    match = re.search(r"inet (\d+\.\d+\.\d+\.\d+)", output)
+    return match.group(1) if match else "No IP found"
+
+
 def parse_rule(split_rule):
     # pylint: disable=too-many-branches
     rule = {
         "name": None,
+        "ip": None,
         "rate": None,
         "delay": None,
         "delayVariance": None,
