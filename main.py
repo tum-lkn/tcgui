@@ -27,6 +27,7 @@ STANDARD_UNIT = "mbit"
 app = Flask(__name__)
 PATTERN = None
 DEV_LIST = None
+EXCLUDE_SPORT = None
 
 app.static_folder = "static"
 
@@ -61,6 +62,12 @@ def parse_arguments():
         default=os.environ.get("TCGUI_REGEX"),
         help="A regex to match interfaces",
     )
+    parser.add_argument(
+        "--exclude_sport",
+        type=int,
+        nargs="*",
+        help="The source ports to exclude from the network emulation."
+    )
     parser.add_argument("--debug", action="store_true", help="Run Flask in debug mode")
     return parser.parse_args()
 
@@ -94,14 +101,15 @@ def new_rule(interface):
 
     interface = filter_interface_name(interface)
 
-    # remove old setup
-    command = f"tc qdisc del dev {interface} root netem"
-    command = command.split(" ")
-    proc = subprocess.Popen(command)
-    proc.wait()
+    rule = filter(lambda r: r["name"] == interface and r["type"] == "netem", get_active_rules())
+    rule = next(rule, None)
+    operation = "change"
+    if rule is None:
+        setup_bypass_queue(interface, EXCLUDE_SPORT)
+        operation = "add"
 
     # apply new setup
-    command = f"tc qdisc add dev {interface} root netem"
+    command = f"tc qdisc {operation} dev {interface} parent 1:3 handle 30: netem"
     if rate != "":
         command += f" rate {rate}{rate_unit}"
     if delay != "":
@@ -122,10 +130,7 @@ def new_rule(interface):
         command += f" corrupt {corrupt}%"
     if limit != "":
         command += f" limit {limit}"
-    print(command)
-    command = command.split(" ")
-    proc = subprocess.Popen(command)
-    proc.wait()
+    run_command(command)
     return redirect(url_for("main") + "#" + interface)
 
 
@@ -134,11 +139,26 @@ def remove_rule(interface):
     interface = filter_interface_name(interface)
 
     # remove old setup
-    command = f"tc qdisc del dev {interface} root netem"
+    run_command(f"tc qdisc del dev {interface} root")
+    return redirect(url_for("main") + "#" + interface)
+
+
+def run_command(command):
+    print(command)
     command = command.split(" ")
     proc = subprocess.Popen(command)
     proc.wait()
-    return redirect(url_for("main") + "#" + interface)
+
+
+def setup_bypass_queue(interface, bypass_ports):
+    run_command(f"tc qdisc del dev {interface} root")
+    run_command(f"tc qdisc add dev {interface} root handle 1: prio")
+    # We want the filter rules for the bypass to match first. Therefore, they need to have priority (smaller prio value).
+    for port in bypass_ports:
+        run_command(f"tc filter add dev {interface} parent 1: protocol ip prio 1 u32 match ip sport {port} 0xffff flowid 1:1")
+
+    # Put all remaining traffic to the lowest prio child class 1:3 which will have our netem leaf attached.
+    run_command(f"tc filter add dev {interface} parent 1: protocol all prio 9 basic flowid 1:3")
 
 
 def filter_interface_name(interface):
@@ -165,15 +185,28 @@ def get_active_rules():
     output = proc.communicate()[0].decode()
     lines = output.split("\n")[:-1]
     rules = []
-    dev = set()
+    no_netem_rules = []
     for line in lines:
         arguments = line.split()
         rule = parse_rule(arguments)
-        if rule["name"] and rule["name"] not in dev:
+        if rule["name"]:
             rule["ip"] = get_interface_ip(rule["name"])
-            rules.append(rule)
-            dev.add(rule["name"])
-            rules.sort(key=lambda x: x["name"])
+            if rule["type"] == "netem":
+                rules.append(rule)
+            else:
+                no_netem_rules.append(rule)
+
+    # Because rules serves two purposes:
+    #  1. detecting active netem rules to load the forms in the web UI,
+    #  2. detecting interfaces -> only dev name is set, the rest of the rule is None,
+    # we have to add non-netem rules too. But only if we didn't already detect a netem rule on that dev name.
+    for no_netem_rule in no_netem_rules:
+        dev = no_netem_rule["name"]
+        netem_rule = filter(lambda r: r["name"] == dev, rules)
+        if next(netem_rule, None) is None:
+            rules.append(no_netem_rule)
+
+    rules.sort(key=lambda x: x["name"])
     return rules
 
 
@@ -199,6 +232,8 @@ def parse_rule(split_rule):
     # pylint: disable=too-many-branches
     rule = {
         "name": None,
+        "handle": split_rule[2],
+        "type": split_rule[1],
         "ip": None,
         "rate": None,
         "delay": None,
@@ -262,6 +297,7 @@ if __name__ == "__main__":
 
     PATTERN = re.compile(args.regex) if args.regex else args.regex
     DEV_LIST = args.dev
+    EXCLUDE_SPORT = args.exclude_sport
 
     # Flask Variable
     app_args = {"host": args.ip, "port": args.port}
